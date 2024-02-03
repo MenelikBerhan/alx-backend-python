@@ -30,30 +30,18 @@ class TestAccessNestedMap(unittest.TestCase):
         self.assertEqual(cm.exception.args[0], err_msg)
 
 
-# @parameterized_class(('test_url', 'test_payload'), [
-#     ("http://example.com", {"payload": True}),
-#     ("http://holberton.io", {"payload": False})
-# ])
 class TestGetJson(unittest.TestCase):
-    """Unit test class for utils module.
+    """Unit test class for utils module with mocked `request.get` method.
     """
     @parameterized.expand([
         ("http://example.com", {"payload": True}),
         ("http://holberton.io", {"payload": False})
     ])
     @patch('requests.get')
-    def test_get_json(self, test_url: str, test_payload: dict,
-                      mock_req_get: Mock):
+    def test_get_json(self, url: str, payload: dict, mock_req_get: Mock):
         """Tests the method for correct return."""
-        mock_req_get.return_value.json.return_value = test_payload
-        self.assertEqual(get_json(test_url), test_payload)
-        mock_req_get.assert_called_once_with(test_url)
-
-    # @patch('requests.get')
-    # def test_get_json(self, mock_req_get: Mock):
-    #     """Tests the `get_json` method for correct return."""
-    #     mock_req_get.return_value.json.return_value = self.test_payload
-    #     # assert correct return
-    #     self.assertEqual(get_json(self.test_url), self.test_payload)
-    #     # assert get is called once with the right argument
-    #     mock_req_get.assert_called_once_with(self.test_url)
+        mock_req_get.return_value.json.return_value = payload
+        # assert correct return
+        self.assertEqual(get_json(url), payload)
+        # assert get is called once with the right argument
+        mock_req_get.assert_called_once_with(url)
