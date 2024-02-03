@@ -3,7 +3,7 @@
 """
 from utils import access_nested_map, get_json, memoize
 from parameterized import parameterized
-from unittest.mock import patch, Mock, DEFAULT
+from unittest.mock import patch, Mock
 import unittest
 
 
@@ -50,7 +50,6 @@ class TestGetJson(unittest.TestCase):
 class TestMemoize(unittest.TestCase):
     """Unit test class for utils module.
     """
-    # @patch(__name__ + '.TestMemoize.test_memoize')
     def test_memoize(self):
         """Tests the `memoize` decorator."""
         class TestClass:
