@@ -2,10 +2,13 @@
 """Tests for `GithubOrgClient` class in `client` module.
 """
 from client import GithubOrgClient
-from parameterized import parameterized
+from fixtures import TEST_PAYLOAD
+from parameterized import parameterized, parameterized_class
 from typing import Dict
 from unittest.mock import patch, Mock, PropertyMock
 import unittest
+
+org_payload, repos_payload, expected_repos, apache2_repos = TEST_PAYLOAD[0]
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -76,3 +79,53 @@ class TestGithubOrgClient(unittest.TestCase):
                          license_key: str, res: bool):
         """Tests the `has_license` method."""
         self.assertEqual(GithubOrgClient.has_license(repo, license_key), res)
+
+
+@parameterized_class([
+    {'org_payload': org_payload,
+     'repos_payload': repos_payload,
+     'expected_repos': expected_repos,
+     'apache2_repos': apache2_repos}
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration test class for `GithubOrgClient` class."""
+    @classmethod
+    def setUpClass(cls):
+        """Setups test by mocking `requests.get` using a patcher."""
+        cls.get_patcher = patch('requests.get')
+        # start mocking `requests.get`
+        mocked_req_get = cls.get_patcher.start()
+
+        def side_effect(url):
+            """A function to be used as a side_effect for mock object.
+            Returns a mock object that has a `json` method."""
+            # to be used as a return value for `requests.get` mocker
+            result = Mock()     # a mock object that has a `json` method
+
+            # based on url set return value for `result`'s `json` method
+            if url == "https://api.github.com/orgs/google":
+                result.json.return_value = cls.org_payload
+                return result
+            if url == "https://api.github.com/orgs/google/repos":
+                result.json.return_value = cls.repos_payload
+                return result
+
+        # set side_effect function to `requests.get` mocker
+        mocked_req_get.side_effect = side_effect
+
+    @classmethod
+    def tearDownClass(cls):
+        """Stops the patcher used to mock `requests.get`."""
+        # stop mocking `requests.get`
+        cls.get_patcher.stop()
+
+    def test_public_repos(self):
+        """Tests the `public_repos` method with out using license argument."""
+        client_obj = GithubOrgClient('google')
+        self.assertEqual(client_obj.public_repos(), self.expected_repos)
+
+    def test_public_repos_with_license(self):
+        """Tests the `public_repos` method using a license argument."""
+        client_obj = GithubOrgClient('google')
+        self.assertEqual(client_obj.public_repos('apache-2.0'),
+                         self.apache2_repos)
