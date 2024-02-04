@@ -3,6 +3,7 @@
 """
 from client import GithubOrgClient
 from parameterized import parameterized
+from typing import Dict
 from unittest.mock import patch, Mock, PropertyMock
 import unittest
 
@@ -66,3 +67,12 @@ class TestGithubOrgClient(unittest.TestCase):
             # called only once. For the rest, returned from memory.
             mock_public_repos_url.assert_called_once_with()
             mocked_get_json.assert_called_once_with("https://test.com")
+
+    @parameterized.expand([
+        ({"license": {"key": "my_license"}}, "my_license", True),
+        ({"license": {"key": "other_license"}}, "my_license", False)
+    ])
+    def test_has_license(self, repo: Dict[str, Dict],
+                         license_key: str, res: bool):
+        """Tests the `has_license` method."""
+        self.assertEqual(GithubOrgClient.has_license(repo, license_key), res)
