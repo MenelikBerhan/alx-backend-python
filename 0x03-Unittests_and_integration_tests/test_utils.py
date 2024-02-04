@@ -40,6 +40,7 @@ class TestGetJson(unittest.TestCase):
     @patch('requests.get')
     def test_get_json(self, url: str, payload: dict, mock_req_get: Mock):
         """Tests the method for correct return."""
+        # `get_json` returns `requests.get.json()`
         mock_req_get.return_value.json.return_value = payload
         # assert correct return
         self.assertEqual(get_json(url), payload)
@@ -69,4 +70,5 @@ class TestMemoize(unittest.TestCase):
         obj = TestClass()
         self.assertEqual(obj.a_property, 42)
         self.assertEqual(obj.a_property, 42)
+        # since `a_property` is memoized `a_method()` is called only once
         mocked_a_method.assert_called_once()
