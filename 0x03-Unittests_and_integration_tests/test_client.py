@@ -105,10 +105,8 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             # based on url set return value for `result`'s `json` method
             if url == "https://api.github.com/orgs/google":
                 result.json.return_value = cls.org_payload
-                # return result
             elif url == "https://api.github.com/orgs/google/repos":
                 result.json.return_value = cls.repos_payload
-                # return result
             else:
                 result.json.return_value = {}
             return result
