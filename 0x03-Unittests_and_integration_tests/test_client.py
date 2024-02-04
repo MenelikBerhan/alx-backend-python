@@ -92,9 +92,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Setups test by mocking `requests.get` using a patcher."""
-        cls.get_patcher = patch('requests.get')
+        get_patcher = patch('requests.get')
         # start mocking `requests.get`
-        mocked_req_get = cls.get_patcher.start()
+        mocked_req_get = get_patcher.start()
 
         def side_effect(url):
             """A function to be used as a side_effect for mock object.
@@ -112,6 +112,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         # set side_effect function to `requests.get` mocker
         mocked_req_get.side_effect = side_effect
+        cls.get_patcher = get_patcher
 
     @classmethod
     def tearDownClass(cls):
