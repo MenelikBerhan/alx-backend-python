@@ -105,10 +105,13 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             # based on url set return value for `result`'s `json` method
             if url == "https://api.github.com/orgs/google":
                 result.json.return_value = cls.org_payload
-                return result
-            if url == "https://api.github.com/orgs/google/repos":
+                # return result
+            elif url == "https://api.github.com/orgs/google/repos":
                 result.json.return_value = cls.repos_payload
-                return result
+                # return result
+            else:
+                result.json.return_value = {}
+            return result
 
         # set side_effect function to `requests.get` mocker
         mocked_req_get.side_effect = side_effect
