@@ -8,8 +8,6 @@ from typing import Dict
 from unittest.mock import patch, Mock, PropertyMock
 import unittest
 
-# org_payload, repos_payload, expected_repos, apache2_repos = TEST_PAYLOAD[0]
-
 
 class TestGithubOrgClient(unittest.TestCase):
     """Unit test class for testing `GithubOrgClient` class.
@@ -81,12 +79,6 @@ class TestGithubOrgClient(unittest.TestCase):
         self.assertEqual(GithubOrgClient.has_license(repo, license_key), res)
 
 
-# @parameterized_class([
-#     {'org_payload': org_payload,
-#      'repos_payload': repos_payload,
-#      'expected_repos': expected_repos,
-#      'apache2_repos': apache2_repos}
-# ])
 @parameterized_class(
     ('org_payload', 'repos_payload', 'expected_repos', 'apache2_repos'),
     TEST_PAYLOAD
